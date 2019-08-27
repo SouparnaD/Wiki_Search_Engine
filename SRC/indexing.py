@@ -64,7 +64,6 @@ def create_inverted_index(doc_list, id_title, tf_idf = False):
         
     return {**inverted_index, **id_title}
         
-#doc_list = [["the", "on", "the", "on"], ["the", "is", "the", "on"]]
-#print(create_inverted_index(doc_list))
-#        
+
+        
 

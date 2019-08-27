@@ -13,7 +13,6 @@ from itertools import combinations
 def find_intersect(query):
     doc_id_list = []
     for word in query:
-#        print("fuckoff")
         doc_list = set()
         for key in ["title", "text", "comment"]:
             i_index = inv_index[key]
