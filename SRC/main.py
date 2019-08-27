@@ -10,14 +10,9 @@ import pickle
 import sys
 from text_processing import text_processing
 from indexing import create_inverted_index
+from utilities import get_saved_object, save_object
 data_path = '../data/data_phase1.xml'
-def save_object(doc_list, file_name):
-    file = open(file_name, "wb")
-    pickle.dump(doc_list, file)
-    file.close()
-def get_saved_object(file_name):
-    pickle_in = open(file_name, "rb")
-    return pickle.load(pickle_in)
+
     
 def main():
     start_time = time()
@@ -33,7 +28,9 @@ def main():
     print("data size:", int(sys.getsizeof(pickle.dumps(doc_list)))/1024**2)
     
     c=0
+    id_title = {}
     for doc in range(0,len(doc_list)):
+        id_title[int(doc_list[doc].id)] = doc_list[doc].title
         text = text_processing(doc_list[doc].text)
         title = text_processing(doc_list[doc].title)
         comment = text_processing(doc_list[doc].comment)
@@ -41,12 +38,11 @@ def main():
         doc_list[doc].title = title
         doc_list[doc].comment = comment
         c+=1
-        if(c%5000 == 0):
-            print(c)
+        if(c%10000 == 0):
+            print("indexed_data:", c)
     
-    i_index = create_inverted_index(doc_list)
-#    for key in i_index.keys():
-#        print(key, ":",i_index[key])
+    i_index = create_inverted_index(doc_list, id_title)
+
     print("total time: %.2f"%(time()-start_time))
     
     save_object(i_index, "../index/index.pickle")

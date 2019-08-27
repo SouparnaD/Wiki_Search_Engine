@@ -6,7 +6,7 @@ Created on Mon Aug 26 21:03:39 2019
 """
 
         
-def create_inverted_index(doc_list, tf_idf = False):
+def create_inverted_index(doc_list, id_title, tf_idf = False):
     inverted_index = dict()
     for doc in doc_list:
 #        text = doc.title
@@ -21,8 +21,6 @@ def create_inverted_index(doc_list, tf_idf = False):
 #            else:
 #                inverted_index[w]={int(doc.id):1}
           
-        
-            
         title = doc.title
         for w in title:
             if "title" in inverted_index:
@@ -64,7 +62,7 @@ def create_inverted_index(doc_list, tf_idf = False):
                 inverted_index["comment"] = {w: {int(doc.id):1}}
         
         
-    return inverted_index
+    return {**inverted_index, **id_title}
         
 #doc_list = [["the", "on", "the", "on"], ["the", "is", "the", "on"]]
 #print(create_inverted_index(doc_list))
