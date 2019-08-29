@@ -16,14 +16,14 @@ data_path = '../data/data_phase1.xml'
     
 def main():
     start_time = time()
-    '''
+    
     doc_list = XmlParser(data_path)
-    print(len(doc_list))
     print("xml parsing time: %.2f"%(time()-start_time))
     save_object(doc_list, "../data/xml_parsed.pickle")
-    '''
     
+    '''
     doc_list = get_saved_object("../data/xml_parsed.pickle")
+    '''
     print(len(doc_list))
     print("data size:", int(sys.getsizeof(pickle.dumps(doc_list)))/1024**2)
     
@@ -34,6 +34,12 @@ def main():
         text = text_processing(doc_list[doc].text)
         title = text_processing(doc_list[doc].title)
         comment = text_processing(doc_list[doc].comment)
+        category = text_processing(doc_list[doc].category)
+        infobox = text_processing(doc_list[doc].infobox)
+        ref = text_processing(doc_list[doc].ref)
+        doc_list[doc].category = category
+        doc_list[doc].infobox = infobox
+        doc_list[doc].ref = ref
         doc_list[doc].text = text
         doc_list[doc].title = title
         doc_list[doc].comment = comment

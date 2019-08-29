@@ -34,10 +34,13 @@ def lemm(text, cores = 4):
         return result
 '''
 def text_processing(texts):
-#    clean = " ".join(text.lower().translate(translator).split())
+    if isinstance(texts, list):
+        clean = []
+        for st in texts:
+            clean.extend([stem(w) for w in st.casefold().translate(translator).split() if w not in stop_words])
+        return clean
+            
     clean = [stem(w) for w in texts.casefold().translate(translator).split() if w not in stop_words]
-#    clean = lemm(clean)
-#    tokens = [w for w in clean]
-    
+
         
     return clean
