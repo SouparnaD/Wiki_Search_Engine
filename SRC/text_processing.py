@@ -10,12 +10,19 @@ import string
 #from nltk import WordNetLemmatizer
 from nltk.corpus import stopwords
 #from multiprocessing import Pool
+
 from stemming.porter import stem
 
 #nlp = spacy.load('en', disable=["tagger", "ner", "parsing"])
 new_stop_words = ['n', 'r']
 stop_words = stopwords.words("english")
 stop_words.extend(new_stop_words)
+
+
+
+
+#import Stemmer
+#stemmer = Stemmer.Stemmer('english')
     
 #stemmer = PorterStemmer()
 #wnl = WordNetLemmatizer()

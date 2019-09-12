@@ -3,9 +3,16 @@
 
 import re
 import xml.sax
+from text_processing import text_processing
+from indexing import create_inverted_index
+from utilities import write_index_to_file, save_object
+
 doc_list = []
-
-
+docid_title_map = {}
+i_count = 0
+doc_chunk_size = 6000
+filenames = []
+index_folder_path = ''
 
 # Regular Expression for Categories
 catRegExp = r'\[\[Category:(.*?)\]\]'
@@ -23,7 +30,7 @@ regExp3 = re.compile(r'{\|(.*?)\|}',re.DOTALL)
 # Regular Expression to remove {{cite **}} or {{vcite **}}
 regExp4 = re.compile(r'{{v?cite(.*?)}}',re.DOTALL)
 
-count___ = 0
+
 
 def remove_extra(text):
     text = regExp1.sub('',text)
@@ -80,7 +87,7 @@ class WikiContentHandler(xml.sax.ContentHandler):
 
     def endElement(self, tag):
       # print(tag  + " ==== ends ")
-
+      global i_count
       if self.doc_running == False :
          return
 
@@ -96,6 +103,17 @@ class WikiContentHandler(xml.sax.ContentHandler):
          self.doc.infobox = ' '.join(re.findall(infoRegExp,self.doc.text,re.DOTALL))
          self.doc.ref = ' '.join(re.findall(refRegExp,self.doc.text,flags=re.DOTALL))
          self.doc.text = remove_extra(self.doc.text)
+         
+         docid_title_map[int(self.doc.id)] = self.doc.title
+         
+         self.doc.text = text_processing(self.doc.text)
+         self.doc.title = text_processing(self.doc.title)
+         self.doc.comment = text_processing(self.doc.comment)
+         self.doc.category = text_processing(self.doc.category)
+         self.doc.infobox = text_processing(self.doc.infobox)
+         self.doc.ref = text_processing(self.doc.ref)
+         
+         
          
 
 # =============================================================================
@@ -113,10 +131,21 @@ class WikiContentHandler(xml.sax.ContentHandler):
 # =============================================================================
 
          doc_list.append(self.doc)
+         if len(doc_list) == doc_chunk_size:
+             i_count += 1
+             fname = create_inverted_index(doc_list, i_count, index_folder_path)
+             filenames.append(fname)
+#             i_count += 1
+#             path_to_save = "../index/i_index" + str(i_count) + ".txt"
+#             write_index_to_file(path_to_save, i_index)
+             doc_list.clear()
+             
+             
+             
          self.doc = ""
          
     def characters(self, content):
-
+        
         if self.doc_running == False :
             return 
         
@@ -172,7 +201,9 @@ class WikiContentHandler(xml.sax.ContentHandler):
 
         
 
-def XmlParser(path):
+def XmlParser(path, index_path):
+    global index_folder_path
+    index_folder_path = index_path
     parser = xml.sax.make_parser()
     parser.setFeature(xml.sax.handler.feature_namespaces, 0)
     
@@ -180,8 +211,17 @@ def XmlParser(path):
     parser.setContentHandler(Handler)
     
     parser.parse(path)
+    global i_count
+#    return doc_list, docid_title_map
+    if len(doc_list) >= 1:
+        i_count += 1
+#        path_to_save = "../index/i_index" + str(i_count) + ".txt"
+        fname = create_inverted_index(doc_list, i_count, index_folder_path)
+        filenames.append(fname)
+#        write_index_to_file(path_to_save, i_index)
     
-    return doc_list
+    save_object(docid_title_map, index_folder_path+"doc_title_map")
+    return filenames
 
     
 
