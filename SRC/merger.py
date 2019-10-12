@@ -8,6 +8,7 @@ import heapq
 from contextlib import ExitStack
 import sys
 from utilities import write_index_to_file
+import os
 #from utilities import save_object
 
 heap_list = []
@@ -22,9 +23,9 @@ def merge(dict1, dict2):
         key_set.add(key)
     for key in key_set:
         if key in dict1 and key in dict2:
-            dict1[key] = {**dict1[key], **dict2[key]}
+            dict1[key] = {**dict(list(dict1[key].items())[:2500]), **dict(list(dict2[key].items())[:2500])}
         elif key in dict2:
-            dict1[key] = dict2[key]
+            dict1[key] = dict(list(dict2[key].items())[0:5000])
     for key in dict1:
         dict1[key] = dict(sorted(dict1[key].items(), key=lambda kv:kv[1], reverse = True))
     return dict1
@@ -32,10 +33,10 @@ def merge(dict1, dict2):
 
 
 
-def merge_index_files(filenames, secondary_index_folder_path, size):
+def merge_index_files(filenames,secondary_index_folder_path, size):
     word_dict = [None]*len(filenames)
     with ExitStack() as stack:
-        files = [stack.enter_context(open(i, "r", errors = 'replace')) for i in filenames]
+        files = [stack.enter_context(open(ind_f, "r", errors = 'replace')) for ind_f in filenames]
         count = len(filenames)
         for i, file in enumerate(files):
             d = eval(file.readline())
@@ -71,7 +72,8 @@ def merge_index_files(filenames, secondary_index_folder_path, size):
                 if count == 0:
                     break
                 
-                
+        for file in filenames:
+            os.remove(file)
         pathname = secondary_index_folder_path+last_key
         write_index_to_file(pathname, inv_index)
             

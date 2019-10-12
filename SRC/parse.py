@@ -10,7 +10,7 @@ from utilities import write_index_to_file, save_object
 doc_list = []
 docid_title_map = {}
 i_count = 0
-doc_chunk_size = 6000
+doc_chunk_size = 50000
 filenames = []
 index_folder_path = ''
 

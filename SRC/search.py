@@ -12,8 +12,8 @@ import re
 #import sys
 import os
 from bisect import bisect_right
-index_path = "../index/secondary_index/"
-doc_title_path = '../index/doc_title_map'
+index_path = "G:/wikidata/index/secondary_index/"
+doc_title_path = 'G:/wikidata/index/doc_title_map'
 
 file_names = os.listdir(index_path)
 file_names.sort()
